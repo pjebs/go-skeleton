@@ -1,6 +1,8 @@
 package config
 
-import ()
+import (
+	"time"
+)
 
 var (
 	MYSQL_HOST     = "localhost"
@@ -33,22 +35,25 @@ const DEFAULT_CONNECTION_TAG = "default"
 |
 */
 
-type database struct {
-	Driver   string
-	Host     string
-	Port     string
-	Name     string
-	User     string
-	Password string
-	Protocol string
-	Settings string
+type Database struct {
+	Driver             string
+	Host               string
+	Port               string
+	Name               string
+	User               string
+	Password           string
+	Protocol           string
+	Settings           string
+	SetConnMaxLifetime time.Duration
+	SetMaxIdleConns    int
+	SetMaxOpenConns    int
 }
 
-func Connections(connectionTag string) *database {
+func Connections(connectionTag string) *Database {
 
-	connections := make(map[string]*database)
+	connections := make(map[string]*Database)
 
-	connections["default"] = &database{
+	connections["default"] = &Database{
 		Driver:   "mysql",
 		Host:     MYSQL_HOST,
 		Port:     MYSQL_PORT,
