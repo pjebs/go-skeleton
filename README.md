@@ -5,7 +5,7 @@ I was an early-adopter of Go. After 5+ years of developing with Go, I have come 
 
 It is heavily influenced by the PHP framework [Laravel](https://github.com/laravel/laravel).
 
-Feel free to use it. The Licence is [WTFPL - Version 2](https://en.wikipedia.org/wiki/WTFPL)
+Feel free to use it. The Licence is [WTFPL - Version 2](https://en.wikipedia.org/wiki/WTFPL#Version_2)
 
 If you find the package useful, click on the  **Star**.
 Feel free to fork and create pull-requests. All contributions are greatly appreciated.
