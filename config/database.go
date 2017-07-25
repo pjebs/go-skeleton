@@ -2,6 +2,8 @@ package config
 
 import (
 	"time"
+	
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
