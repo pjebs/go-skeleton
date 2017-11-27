@@ -7,7 +7,7 @@ import (
 	//c "../../config"
 
 	//Controllers
-	cD "./Controllers/Default"
+	cD "./controllers/default"
 )
 
 func New() *mux.Router {

@@ -2,7 +2,7 @@ package config
 
 import (
 	"time"
-	
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -14,28 +14,8 @@ var (
 	MYSQL_PASSWORD = ""
 )
 
-/*
-|--------------------------------------------------------------------------
-| Default Database Connection Name
-|--------------------------------------------------------------------------
-|
-| Here you may specify which of the database connections below you wish
-| to use as your default connection for all database work. Of course
-| you may use many connections at once using the Database library.
-|
-*/
-
+// DEFAULT_CONNECTION_TAG sets which connection below is the default connection for use by
 const DEFAULT_CONNECTION_TAG = "default"
-
-/*
-|--------------------------------------------------------------------------
-| Database Connections
-|--------------------------------------------------------------------------
-|
-| Here are each of the database connections setup for your application.
-|
-|
-*/
 
 type Database struct {
 	Driver             string
@@ -47,7 +27,7 @@ type Database struct {
 	Protocol           string
 	Settings           string
 	SetConnMaxLifetime time.Duration
-	SetMaxIdleConns    int
+	SetMaxIdleConns    int //Always set this to prevent it from being zero
 	SetMaxOpenConns    int
 }
 
@@ -56,14 +36,16 @@ func Connections(connectionTag string) *Database {
 	connections := make(map[string]*Database)
 
 	connections["default"] = &Database{
-		Driver:   "mysql",
-		Host:     MYSQL_HOST,
-		Port:     MYSQL_PORT,
-		Name:     "",
-		User:     MYSQL_USER,
-		Password: MYSQL_PASSWORD,
-		Protocol: MYSQL_PROTOCOL,
-		Settings: "parseTime=true", //"?parseTime=true"
+		Driver:          "mysql",
+		Host:            MYSQL_HOST,
+		Port:            MYSQL_PORT,
+		Name:            "",
+		User:            MYSQL_USER,
+		Password:        MYSQL_PASSWORD,
+		Protocol:        MYSQL_PROTOCOL,
+		Settings:        "parseTime=true",
+		SetMaxIdleConns: 10,
+		SetMaxOpenConns: 12,
 	}
 
 	return connections[connectionTag]

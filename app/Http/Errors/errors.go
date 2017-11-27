@@ -13,12 +13,14 @@ import (
 
 type ErrorCode uint8
 
+// Add more specific error codes here
 const (
 	RequestEmptyOrInvalidCode ErrorCode = 1
 	GenericErrorCode                    = 2
 	SpecificErrorCode                   = 3
 )
 
+// Add more specific error descriptions here
 var (
 	RequestEmptyOrInvalid = errors.New("request is empty or invalid")
 	GenericError          = errors.New("generic error")
@@ -47,7 +49,7 @@ func New(err error, message ...string) error {
 }
 
 // Returns API Error response in a standard format
-func ReturnError(w http.ResponseWriter, err error, message ...string) {
+func ReturnError(w http.ResponseWriter, httpStatusCode int, err error, message ...string) {
 
 	code := errorMap[err]
 	var je jsonerror.JE
@@ -59,25 +61,27 @@ func ReturnError(w http.ResponseWriter, err error, message ...string) {
 	}
 
 	r := render.New(render.Options{})
-	r.JSON(w, http.StatusOK, je.Render())
+	r.JSON(w, httpStatusCode, je.Render())
 	return
 }
 
 // Returns API response in json format
-func ReturnSuccess(w http.ResponseWriter, data interface{}) error {
+func ReturnSuccess(w http.ResponseWriter, httpStatusCode int, data interface{}) error {
 
 	js, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
+
+	w.WriteHeader(httpStatusCode)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 
 	return nil
 }
 
-// Validates API request payload if the payload is in json format
-func ValidateRequest(r *http.Request) (*gabs.Container, error) {
+// ParseBody validates and converts the JSON Post body into gabs.Container structs
+func ParseBody(r *http.Request) (*gabs.Container, error) {
 
 	if r.Body == nil {
 		return nil, RequestEmptyOrInvalid
@@ -89,9 +93,9 @@ func ValidateRequest(r *http.Request) (*gabs.Container, error) {
 	}
 	defer r.Body.Close()
 
-	reqJson, err := gabs.ParseJSON(reqData)
+	reqJSON, err := gabs.ParseJSON(reqData)
 	if err != nil {
 		return nil, err
 	}
-	return reqJson, nil
+	return reqJSON, nil
 }

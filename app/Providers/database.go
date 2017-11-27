@@ -18,7 +18,7 @@ import (
 var dbConnections = make(map[string]*sql.DB)
 var dbMutex sync.RWMutex
 
-func SqlDB(ctx context.Context, connectionTag ...string) (*sql.DB, error) {
+func SQLDB(ctx context.Context, connectionTag ...string) (*sql.DB, error) {
 
 	var connectionString string
 	if len(connectionTag) == 0 {
@@ -66,9 +66,8 @@ func SqlDB(ctx context.Context, connectionTag ...string) (*sql.DB, error) {
 			dbMutex.Unlock()
 			if err == driver.ErrBadConn {
 				return backoff.Permanent(err) //Don't retry
-			} else {
-				return err //Retry
 			}
+			return err //Retry
 		}
 
 		if justCreated {
@@ -106,7 +105,7 @@ func (w DebugLogger) Print(v ...interface{}) {
 // since SqlDB() already calls Ping()
 func Gorm(ctx context.Context, connectionTag ...string) (*gorm.DB, error) {
 
-	db, err := SqlDB(ctx, connectionTag...)
+	db, err := SQLDB(ctx, connectionTag...)
 	if err != nil {
 		return nil, err
 	}
@@ -165,14 +164,12 @@ func connectionOpenString(connectionTag ...string) (string, string) {
 	if db.Settings == "" {
 		if db.Password == "" {
 			return db.Driver, db.User + "@" + db.Protocol + "(" + db.Host + ":" + db.Port + ")/" + db.Name
-		} else {
-			return db.Driver, db.User + ":" + db.Password + "@" + db.Protocol + "(" + db.Host + ":" + db.Port + ")/" + db.Name
 		}
+		return db.Driver, db.User + ":" + db.Password + "@" + db.Protocol + "(" + db.Host + ":" + db.Port + ")/" + db.Name
 	} else {
 		if db.Password == "" {
 			return db.Driver, db.User + "@" + db.Protocol + "(" + db.Host + ":" + db.Port + ")/" + db.Name + "?" + db.Settings
-		} else {
-			return db.Driver, db.User + ":" + db.Password + "@" + db.Protocol + "(" + db.Host + ":" + db.Port + ")/" + db.Name + "?" + db.Settings
 		}
+		return db.Driver, db.User + ":" + db.Password + "@" + db.Protocol + "(" + db.Host + ":" + db.Port + ")/" + db.Name + "?" + db.Settings
 	}
 }

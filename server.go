@@ -8,8 +8,8 @@ import (
 	"github.com/urfave/negroni"
 
 	//Framework
-	route "./app/Http"
-	s "./app/Providers"
+	route "./app/http"
+	s "./app/providers"
 	c "./config"
 )
 
